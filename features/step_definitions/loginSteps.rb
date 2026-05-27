@@ -31,3 +31,12 @@ end
 # Then('I should see a username required error message') do
 #   expect(page).to have_content('Epic sadface: Username is required')
 # end
+
+Then('I should see the login result {string} with message {string}') do |result, message|
+  if result == 'success'
+    expect(page).to have_current_path('/inventory.html')
+    expect(page).to have_content('Products')
+  else
+    expect(page).to have_content(message)
+  end
+end
