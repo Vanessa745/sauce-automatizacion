@@ -39,6 +39,8 @@ Feature: Login to SauceDemo
       | standard_user            | secret_sauce   | success | Products                                                                |
       | problem_user             | secret_sauce   | success | Products                                                                |
       | performance_glitch_user  | secret_sauce   | success | Products                                                                |
+      | visual_user              | secret_sauce   | success | Products                                                                |
+      | error_user               | secret_sauce   | success | Products                                                                |
       | locked_out_user          | secret_sauce   | error   | Epic sadface: Sorry, this user has been locked out.                      |
       | standard_user            | wrong_password | error   | Epic sadface: Username and password do not match any user in this service |
       |                         | secret_sauce   | error   | Epic sadface: Username is required                                       |
