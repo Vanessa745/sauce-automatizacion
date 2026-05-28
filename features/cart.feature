@@ -12,6 +12,14 @@ Feature: Add products to the shopping cart
     Then the cart badge should show "1"
     And the "Sauce Labs Backpack" button should change to "Remove"
 
+  Scenario Outline: Add products to the cart
+    When I add a product to the cart
+    Then the cart badge should increment the products
+    And the Add button should change to Remove
+    Examples:
+      | productName | output |
+      | productName | output |
+
   Scenario: Add two different products to the cart
     When I add the product "Sauce Labs Backpack" to the cart
     And I add the product "Sauce Labs Bike Light" to the cart
