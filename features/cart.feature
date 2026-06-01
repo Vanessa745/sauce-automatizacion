@@ -4,7 +4,7 @@ Feature: Add products to the shopping cart
   So that I can prepare the items I want to buy
 
   Background:
-    Given I am logged in to SauceDemo
+    Given I am logged in to SauceDemo as "standard_user"
     And I am on the products page
 
   Scenario: Add one product to the cart
