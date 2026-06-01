@@ -1,6 +1,7 @@
 
 After do 
     Capybara.current_session.driver.quit
+    Capybara.reset_sessions!
 end
 
 Before '@maximize' do
