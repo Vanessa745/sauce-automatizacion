@@ -41,7 +41,15 @@ Then('the cart badge should not be visible') do
   expect(page).to have_no_css('.shopping_cart_badge')
 end
 
-Then('the {string} button should change to {string}') do |product_name, expected_button_text|
+Then('the Add to cart button for the {string} product should change to {string}') do |product_name, expected_button_text|
+  product = find('.inventory_item', text: product_name)
+
+  within(product) do
+    expect(page).to have_button(expected_button_text)
+  end
+end
+
+Then('the Remove button for the {string} product should change to {string}') do |product_name, expected_button_text|
   product = find('.inventory_item', text: product_name)
 
   within(product) do
