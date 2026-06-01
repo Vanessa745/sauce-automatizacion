@@ -30,5 +30,8 @@ Then('I return to the products page') do
   click_button 'Back to products'
 
   expect(page).to have_current_path('/inventory.html')
-  expect(page).to have_content('Products')
+  
+  expect(page).to have_css('.title', exact_text: 'Products')
+  expect(page).to have_css('.inventory_list')
+  expect(page).to have_css('.inventory_item', minimum: 1)
 end
