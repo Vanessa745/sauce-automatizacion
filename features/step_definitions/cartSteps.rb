@@ -1,7 +1,7 @@
-Given('I am logged in to SauceDemo') do
+Given('I am logged in to SauceDemo as {string}') do |username|
   visit('https://www.saucedemo.com/')
 
-  fill_in('user-name', with: 'standard_user')
+  fill_in('user-name', with: username)
   fill_in('password', with: 'secret_sauce')
   click_button('login-button')
 
