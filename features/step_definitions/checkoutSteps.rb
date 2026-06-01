@@ -75,4 +75,6 @@ end
 Then('I should return to the products page') do
   expect(page).to have_current_path('/inventory.html', wait: 5)
   expect(page).to have_css('.title', text: 'Products')
+  expect(page).to have_css('.inventory_list')
+  expect(page).to have_css('.inventory_item', minimum: 1)
 end
