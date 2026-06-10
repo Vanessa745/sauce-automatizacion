@@ -11,7 +11,8 @@ Feature: Checkout products in SauceDemo
     When I add the product "Sauce Labs Backpack" to the cart
     And I open the shopping cart
     And I proceed to checkout
-    Then I should see the checkout information page
+    Then I should see the checkout information form
+    And I should see fields for first name, last name, and postal code
 
   Scenario: Complete checkout with one product
     When I add the product "Sauce Labs Backpack" to the cart
@@ -19,9 +20,11 @@ Feature: Checkout products in SauceDemo
     And I proceed to checkout
     And I enter checkout information with first name "Vanessa", last name "Canaviri", and postal code "0000"
     And I continue the checkout process
-    And I finish the checkout
-    Then I should see the checkout complete page
-    And I should see the order confirmation message
+    Then I should see the product "Sauce Labs Backpack" in the checkout overview
+    When I finish the checkout
+    Then I should see the checkout completion title "Checkout: Complete!"
+    And I should see the order confirmation message "Thank you for your order!"
+    And I should see the dispatch message "Your order has been dispatched"
 
   Scenario: Complete checkout with multiple products
     When I add the product "Sauce Labs Backpack" to the cart
@@ -33,32 +36,24 @@ Feature: Checkout products in SauceDemo
     Then I should see the product "Sauce Labs Backpack" in the checkout overview
     And I should see the product "Sauce Labs Bike Light" in the checkout overview
     When I finish the checkout
-    Then I should see the checkout complete page
-    And I should see the order confirmation message
+    Then I should see the checkout completion title "Checkout: Complete!"
+    And I should see the order confirmation message "Thank you for your order!"
+    And I should see the dispatch message "Your order has been dispatched"
 
-  Scenario: Checkout fails when first name is missing
+  Scenario Outline: Checkout fails when required customer information is missing
     When I add the product "Sauce Labs Backpack" to the cart
     And I open the shopping cart
     And I proceed to checkout
-    And I enter checkout information with first name "", last name "Canaviri", and postal code "0000"
+    And I enter checkout information with first name "<first_name>", last name "<last_name>", and postal code "<postal_code>"
     And I continue the checkout process
-    Then I should see a checkout error message "Error: First Name is required"
+    Then I should remain on the checkout information form
+    And I should see a checkout error message "<error_message>"
 
-  Scenario: Checkout fails when last name is missing
-    When I add the product "Sauce Labs Backpack" to the cart
-    And I open the shopping cart
-    And I proceed to checkout
-    And I enter checkout information with first name "Vanessa", last name "", and postal code "0000"
-    And I continue the checkout process
-    Then I should see a checkout error message "Error: Last Name is required"
-
-  Scenario: Checkout fails when postal code is missing
-    When I add the product "Sauce Labs Backpack" to the cart
-    And I open the shopping cart
-    And I proceed to checkout
-    And I enter checkout information with first name "Vanessa", last name "Canaviri", and postal code ""
-    And I continue the checkout process
-    Then I should see a checkout error message "Error: Postal Code is required"
+    Examples:
+      | first_name | last_name | postal_code | error_message                  |
+      |            | Canaviri  | 0000        | Error: First Name is required  |
+      | Vanessa    |           | 0000        | Error: Last Name is required   |
+      | Vanessa    | Canaviri  |             | Error: Postal Code is required |
 
   Scenario: Cancel checkout from checkout information page
     When I add the product "Sauce Labs Backpack" to the cart
@@ -66,6 +61,7 @@ Feature: Checkout products in SauceDemo
     And I proceed to checkout
     And I cancel the checkout from the information page
     Then I should return to the cart page
+    And I should still see the product "Sauce Labs Backpack" in the cart
 
   Scenario: Cancel checkout from checkout overview page
     When I add the product "Sauce Labs Backpack" to the cart
@@ -75,3 +71,4 @@ Feature: Checkout products in SauceDemo
     And I continue the checkout process
     And I cancel the checkout from the overview page
     Then I should return to the products page
+    And I should see the product catalog
