@@ -12,9 +12,14 @@ Feature: Login to SauceDemo
     And I click the login button
     Then I should see the login result "<result>" with message "<message>"
 
+    @smoke
+    Examples: 
+      | username      | password     | result  | message  |
+      | standard_user | secret_sauce | success | Products |
+
+    @regression
     Examples:
       | username                 | password       | result  | message                                                                   |
-      | standard_user            | secret_sauce   | success | Products                                                                  |
       | problem_user             | secret_sauce   | success | Products                                                                  |
       | performance_glitch_user  | secret_sauce   | success | Products                                                                  |
       | visual_user              | secret_sauce   | success | Products                                                                  |

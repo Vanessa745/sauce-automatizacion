@@ -7,6 +7,7 @@ Feature: Checkout products in SauceDemo
     Given I am logged in to SauceDemo as "standard_user"
     And I am on the products page
 
+  @smoke
   Scenario: Start checkout with one product in the cart
     When I add the product "Sauce Labs Backpack" to the cart
     And I open the shopping cart
@@ -14,6 +15,7 @@ Feature: Checkout products in SauceDemo
     Then I should see the checkout information form
     And I should see fields for first name, last name, and postal code
 
+  @smoke
   Scenario: Complete checkout with one product
     When I add the product "Sauce Labs Backpack" to the cart
     And I open the shopping cart
@@ -26,6 +28,7 @@ Feature: Checkout products in SauceDemo
     And I should see the order confirmation message "Thank you for your order!"
     And I should see the dispatch message "Your order has been dispatched"
 
+  @smoke
   Scenario: Complete checkout with multiple products
     When I add the product "Sauce Labs Backpack" to the cart
     And I add the product "Sauce Labs Bike Light" to the cart
@@ -40,6 +43,7 @@ Feature: Checkout products in SauceDemo
     And I should see the order confirmation message "Thank you for your order!"
     And I should see the dispatch message "Your order has been dispatched"
 
+  @smoke
   Scenario: Verify payment amount for one product
     When I add the product "Sauce Labs Backpack" to the cart
     And I open the shopping cart
@@ -52,6 +56,7 @@ Feature: Checkout products in SauceDemo
     And I should see the final total "$32.39"
     And the checkout total should match the visible product prices
 
+  @smoke
   Scenario: Verify payment amount for multiple products
     When I add the product "Sauce Labs Backpack" to the cart
     And I add the product "Sauce Labs Bike Light" to the cart
@@ -66,6 +71,7 @@ Feature: Checkout products in SauceDemo
     And I should see the final total "$43.18"
     And the checkout total should match the visible product prices
 
+  @regression
   Scenario Outline: Checkout fails when required customer information is missing
     When I add the product "Sauce Labs Backpack" to the cart
     And I open the shopping cart
@@ -81,6 +87,7 @@ Feature: Checkout products in SauceDemo
       | Vanessa    |           | 0000        | Error: Last Name is required   |
       | Vanessa    | Canaviri  |             | Error: Postal Code is required |
 
+  @regression
   Scenario: Cancel checkout from checkout information page
     When I add the product "Sauce Labs Backpack" to the cart
     And I open the shopping cart
@@ -89,6 +96,7 @@ Feature: Checkout products in SauceDemo
     Then I should return to the cart page
     And I should still see the product "Sauce Labs Backpack" in the cart
 
+  @regression
   Scenario: Cancel checkout from checkout overview page
     When I add the product "Sauce Labs Backpack" to the cart
     And I open the shopping cart
