@@ -40,6 +40,32 @@ Feature: Checkout products in SauceDemo
     And I should see the order confirmation message "Thank you for your order!"
     And I should see the dispatch message "Your order has been dispatched"
 
+  Scenario: Verify payment amount for one product
+    When I add the product "Sauce Labs Backpack" to the cart
+    And I open the shopping cart
+    And I proceed to checkout
+    And I enter checkout information with first name "Vanessa", last name "Canaviri", and postal code "0000"
+    And I continue the checkout process
+    Then I should see the product "Sauce Labs Backpack" in the checkout overview
+    And I should see the item total "$29.99"
+    And I should see the tax amount "$2.40"
+    And I should see the final total "$32.39"
+    And the checkout total should match the visible product prices
+
+  Scenario: Verify payment amount for multiple products
+    When I add the product "Sauce Labs Backpack" to the cart
+    And I add the product "Sauce Labs Bike Light" to the cart
+    And I open the shopping cart
+    And I proceed to checkout
+    And I enter checkout information with first name "Vanessa", last name "Canaviri", and postal code "0000"
+    And I continue the checkout process
+    Then I should see the product "Sauce Labs Backpack" in the checkout overview
+    And I should see the product "Sauce Labs Bike Light" in the checkout overview
+    And I should see the item total "$39.98"
+    And I should see the tax amount "$3.20"
+    And I should see the final total "$43.18"
+    And the checkout total should match the visible product prices
+
   Scenario Outline: Checkout fails when required customer information is missing
     When I add the product "Sauce Labs Backpack" to the cart
     And I open the shopping cart

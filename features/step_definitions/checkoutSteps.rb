@@ -67,6 +67,36 @@ def find_cart_product(product_name)
   matching_products.first
 end
 
+def summary_item_total_text
+  find('.summary_subtotal_label', visible: true).text.strip
+end
+
+def summary_tax_text
+  find('.summary_tax_label', visible: true).text.strip
+end
+
+def summary_total_text
+  find('.summary_total_label', visible: true).text.strip
+end
+
+def extract_money_from(text)
+  match = text.match(/\$\d+\.\d{2}/)
+
+  raise "No money amount found in text: #{text}" if match.nil?
+
+  match[0]
+end
+
+def money_to_number(money_text)
+  money_text.gsub('$', '').to_f
+end
+
+def checkout_product_prices
+  all('.cart_item').map do |item|
+    item.find('.inventory_item_price').text.strip.gsub('$', '').to_f
+  end
+end
+
 When('I proceed to checkout') do
   expect(page).to have_current_path('/cart.html', wait: 5)
   expect(page).to have_css('.title', text: 'Your Cart')
@@ -233,4 +263,50 @@ Then('I should see the product catalog') do
     expect(description).not_to be_empty
     expect(price).to match(/^\$\d+\.\d{2}$/)
   end
+end
+
+Then('I should see the item total {string}') do |expected_item_total|
+  validate_checkout_overview_page
+
+  item_total_text = summary_item_total_text
+  actual_item_total = extract_money_from(item_total_text)
+
+  expect(item_total_text).to include('Item total:')
+  expect(actual_item_total).to eq(expected_item_total)
+end
+
+Then('I should see the tax amount {string}') do |expected_tax|
+  validate_checkout_overview_page
+
+  tax_text = summary_tax_text
+  actual_tax = extract_money_from(tax_text)
+
+  expect(tax_text).to include('Tax:')
+  expect(actual_tax).to eq(expected_tax)
+end
+
+Then('I should see the final total {string}') do |expected_total|
+  validate_checkout_overview_page
+
+  total_text = summary_total_text
+  actual_total = extract_money_from(total_text)
+
+  expect(total_text).to include('Total:')
+  expect(actual_total).to eq(expected_total)
+end
+
+Then('the checkout total should match the visible product prices') do
+  validate_checkout_overview_page
+
+  product_subtotal = checkout_product_prices.sum.round(2)
+  expected_tax = (product_subtotal * 0.08).round(2)
+  expected_total = (product_subtotal + expected_tax).round(2)
+
+  actual_item_total = money_to_number(extract_money_from(summary_item_total_text))
+  actual_tax = money_to_number(extract_money_from(summary_tax_text))
+  actual_total = money_to_number(extract_money_from(summary_total_text))
+
+  expect(actual_item_total).to eq(product_subtotal)
+  expect(actual_tax).to eq(expected_tax)
+  expect(actual_total).to eq(expected_total)
 end
