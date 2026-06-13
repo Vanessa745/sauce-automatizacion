@@ -70,3 +70,4 @@ CapybaraDriverRegistrar.register_selenium_driver(:chrome)
 Capybara.run_server = false
 #World(Capybara)
 
+Dir[File.join(__dir__, '../pages/*.rb')].sort.each { |file| require file }
