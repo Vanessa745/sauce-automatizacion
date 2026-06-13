@@ -167,6 +167,69 @@ class CatalogPage
     expect(names.uniq.size).to eq(names.size)
   end
 
+  # Métodos relacionados con la gestión del carrito de compras
+
+  def product_card_by_name(product_name)
+    product_cards.find do |product|
+      product.has_css?(PRODUCT_NAME, text: product_name, exact_text: true)
+    end
+  end
+
+  def validate_product_exists(product_name)
+    product = product_card_by_name(product_name)
+
+    raise "Product not found on products page: #{product_name}" if product.nil?
+
+    expect(product).to have_css(PRODUCT_NAME, text: product_name, exact_text: true)
+    expect(product).to have_css(PRODUCT_DESCRIPTION)
+    expect(product).to have_css(PRODUCT_PRICE)
+    expect(product).to have_css('button')
+
+    product
+  end
+
+  def add_product_to_cart(product_name)
+    product = validate_product_exists(product_name)
+
+    within(product) do
+      expect(page).to have_button('Add to cart')
+      click_button('Add to cart')
+      expect(page).to have_button('Remove')
+    end
+  end
+
+  def remove_product_from_products_page(product_name)
+    product = validate_product_exists(product_name)
+
+    within(product) do
+      expect(page).to have_button('Remove')
+      click_button('Remove')
+      expect(page).to have_button('Add to cart')
+    end
+  end
+
+  def validate_product_button_text(product_name, expected_button_text)
+    product = validate_product_exists(product_name)
+
+    within(product) do
+      expect(page).to have_css(PRODUCT_NAME, text: product_name, exact_text: true)
+      expect(page).to have_button(expected_button_text, exact_text: expected_button_text)
+    end
+  end
+
+  def open_shopping_cart
+    expect(page).to have_css('.shopping_cart_link', visible: true)
+    find('.shopping_cart_link').click
+  end
+
+  def validate_cart_badge(expected_quantity)
+    expect(page).to have_css('.shopping_cart_badge', exact_text: expected_quantity)
+  end
+
+  def validate_cart_badge_not_visible
+    expect(page).to have_no_css('.shopping_cart_badge')
+  end
+
   private
 
   def sort_dropdown

@@ -1,5 +1,6 @@
 class LoginPage
   include Capybara::DSL
+  include RSpec::Matchers
 
   URL = 'https://www.saucedemo.com/'
 
