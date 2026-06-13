@@ -230,11 +230,33 @@ class CatalogPage
     expect(page).to have_no_css('.shopping_cart_badge')
   end
 
-  # # Métodos relacionados con la gestión del checkout
+  # Métodos relacionados con la gestión del checkout
 
   def validate_product_catalog
     validate_products_page
     validate_products_are_visible_and_complete
+  end
+
+  # Métodos relacionados con el detalle del producto
+
+  def catalog_product_information(product_name)
+    validate_products_page
+
+    product = validate_product_exists(product_name)
+
+    {
+      name: product.find(PRODUCT_NAME).text.strip,
+      description: product.find(PRODUCT_DESCRIPTION).text.strip,
+      price: product.find(PRODUCT_PRICE).text.strip
+    }
+  end
+
+  def open_product_detail(product_name)
+    validate_products_page
+
+    product = validate_product_exists(product_name)
+
+    product.find(PRODUCT_NAME).click
   end
 
   private

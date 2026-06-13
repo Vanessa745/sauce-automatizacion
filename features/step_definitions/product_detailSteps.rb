@@ -1,37 +1,30 @@
 When('I save the catalog information for product {string}') do |product_name|
-  product_card = all('.inventory_item').find do |item|
-    item.has_text?(product_name)
-  end
+  @catalog_page ||= CatalogPage.new
 
-  @catalog_product_name = product_card.find('.inventory_item_name').text
-  @catalog_product_description = product_card.find('.inventory_item_desc').text
-  @catalog_product_price = product_card.find('.inventory_item_price').text
+  @catalog_page.validate_products_page
+  @catalog_product_information = @catalog_page.catalog_product_information(product_name)
 end
 
 When('I open the detail page for product {string}') do |product_name|
-  product_card = all('.inventory_item').find do |item|
-    item.has_text?(product_name)
-  end
+  @catalog_page ||= CatalogPage.new
 
-  product_card.find('.inventory_item_name').click
+  @catalog_page.open_product_detail(product_name)
+
+  @product_detail_page = ProductDetailPage.new
+  @product_detail_page.validate_detail_page
 end
 
 Then('the product detail information should match the catalog information') do
-  detail_name = find('.inventory_details_name').text
-  detail_description = find('.inventory_details_desc').text
-  detail_price = find('.inventory_details_price').text
+  @product_detail_page ||= ProductDetailPage.new
 
-  expect(detail_name).to eq(@catalog_product_name)
-  expect(detail_description).to eq(@catalog_product_description)
-  expect(detail_price).to eq(@catalog_product_price)
+  @product_detail_page.validate_information_matches_catalog(@catalog_product_information)
 end
 
 Then('I return to the products page') do
-  click_button 'Back to products'
+  @product_detail_page ||= ProductDetailPage.new
 
-  expect(page).to have_current_path('/inventory.html')
-  
-  expect(page).to have_css('.title', exact_text: 'Products')
-  expect(page).to have_css('.inventory_list')
-  expect(page).to have_css('.inventory_item', minimum: 1)
+  @product_detail_page.return_to_products_page
+
+  @catalog_page = CatalogPage.new
+  @catalog_page.validate_products_page
 end
