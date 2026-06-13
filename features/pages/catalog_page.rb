@@ -230,6 +230,13 @@ class CatalogPage
     expect(page).to have_no_css('.shopping_cart_badge')
   end
 
+  # # Métodos relacionados con la gestión del checkout
+
+  def validate_product_catalog
+    validate_products_page
+    validate_products_are_visible_and_complete
+  end
+
   private
 
   def sort_dropdown

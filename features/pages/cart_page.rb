@@ -55,4 +55,11 @@ class CartPage
     validate_cart_page
     expect(page).to have_css(CHECKOUT_BUTTON, visible: true)
   end
+
+  def proceed_to_checkout
+    validate_cart_page
+
+    expect(page).to have_css('#checkout', visible: true)
+    click_button('Checkout')
+  end
 end
