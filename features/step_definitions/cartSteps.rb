@@ -1,80 +1,62 @@
 Given('I am logged in to SauceDemo as {string}') do |username|
-  visit('https://www.saucedemo.com/')
+  @login_page = LoginPage.new
+  @login_page.open
+  @login_page.enter_username(username)
+  @login_page.enter_password('secret_sauce')
+  @login_page.click_login_button
+  @login_page.validate_successful_login('Products')
 
-  fill_in('user-name', with: username)
-  fill_in('password', with: 'secret_sauce')
-  click_button('login-button')
-
-  expect(page).to have_current_path('/inventory.html')
-  expect(page).to have_css('span.title', exact_text: 'Products')
-  expect(page).to have_css('.inventory_list')
+  @catalog_page = CatalogPage.new
 end
 
 Given('I am on the products page') do
-  expect(page).to have_current_path('/inventory.html')
-  expect(page).to have_css('.title', exact_text: 'Products')
-  expect(page).to have_css('.inventory_list')
-  expect(page).to have_css('.inventory_item', minimum: 1)
+  @catalog_page ||= CatalogPage.new
+  @catalog_page.validate_products_page
 end
 
 When('I add the product {string} to the cart') do |product_name|
-  product = find('.inventory_item', text: product_name)
-
-  within(product) do
-    expect(page).to have_css('.inventory_item_name', exact_text: product_name)
-    click_button('Add to cart')
-  end
+  @catalog_page ||= CatalogPage.new
+  @catalog_page.validate_products_page
+  @catalog_page.add_product_to_cart(product_name)
 end
 
 When('I remove the product {string} from the products page') do |product_name|
-  product = find('.inventory_item', text: product_name)
-
-  within(product) do
-    expect(page).to have_css('.inventory_item_name', exact_text: product_name)
-    click_button('Remove')
-  end
+  @catalog_page ||= CatalogPage.new
+  @catalog_page.validate_products_page
+  @catalog_page.remove_product_from_products_page(product_name)
 end
 
 When('I open the shopping cart') do
-  find('.shopping_cart_link').click
+  @catalog_page ||= CatalogPage.new
+  @catalog_page.open_shopping_cart
 
-  expect(page).to have_current_path('/cart.html')
-  expect(page).to have_css('span.title', exact_text: 'Your Cart')
+  @cart_page = CartPage.new
+  @cart_page.validate_cart_page
 end
 
 Then('the cart badge should show {string}') do |expected_quantity|
-  expect(page).to have_css('.shopping_cart_badge', exact_text: expected_quantity)
+  @catalog_page ||= CatalogPage.new
+  @catalog_page.validate_cart_badge(expected_quantity)
 end
 
 Then('the cart badge should not be visible') do
-  expect(page).to have_no_css('.shopping_cart_badge')
+  @catalog_page ||= CatalogPage.new
+  @catalog_page.validate_cart_badge_not_visible
 end
 
 Then('the Add to cart button for the {string} product should change to {string}') do |product_name, expected_button_text|
-  product = find('.inventory_item', text: product_name)
-
-  within(product) do
-    expect(page).to have_css('.inventory_item_name', exact_text: product_name)
-    expect(page).to have_button(expected_button_text, exact_text: expected_button_text)
-  end
+  @catalog_page ||= CatalogPage.new
+  @catalog_page.validate_products_page
+  @catalog_page.validate_product_button_text(product_name, expected_button_text)
 end
 
 Then('the Remove button for the {string} product should change to {string}') do |product_name, expected_button_text|
-  product = find('.inventory_item', text: product_name)
-
-  within(product) do
-    expect(page).to have_css('.inventory_item_name', exact_text: product_name)
-    expect(page).to have_button(expected_button_text, exact_text: expected_button_text)
-  end
+  @catalog_page ||= CatalogPage.new
+  @catalog_page.validate_products_page
+  @catalog_page.validate_product_button_text(product_name, expected_button_text)
 end
 
 Then('I should see the product {string} in the cart') do |product_name|
-  expect(page).to have_current_path('/cart.html')
-  expect(page).to have_css('.title', exact_text: 'Your Cart')
-
-  cart_item = find('.cart_item', text: product_name)
-
-  within(cart_item) do
-    expect(page).to have_css('.inventory_item_name', exact_text: product_name)
-  end
+  @cart_page ||= CartPage.new
+  @cart_page.validate_product_in_cart(product_name)
 end
