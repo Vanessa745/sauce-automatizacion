@@ -7,6 +7,7 @@ Feature: Sort products in SauceDemo
     Given I am logged in to SauceDemo as "standard_user"
     And I am on the products page
 
+  @regression
   Scenario Outline: Sort products by name
     When I select the sort option "<sort_option>"
     Then the first product displayed should be "<first_product>"
@@ -17,6 +18,7 @@ Feature: Sort products in SauceDemo
       | Name (A to Z) | Sauce Labs Backpack               | from A to Z    |
       | Name (Z to A) | Test.allTheThings() T-Shirt (Red) | from Z to A    |
 
+  @regression
   Scenario Outline: Sort products by price
     When I select the sort option "<sort_option>"
     Then the first product displayed should be "<first_product>"

@@ -7,6 +7,7 @@ Feature: Product detail consistency in SauceDemo
     Given I am logged in to SauceDemo as "standard_user"
     And I am on the products page
 
+  @regression
   Scenario Outline: Verify product information consistency between catalog and detail page
     When I save the catalog information for product "<product_name>"
     And I open the detail page for product "<product_name>"
